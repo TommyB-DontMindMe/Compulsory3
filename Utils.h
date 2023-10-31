@@ -19,7 +19,7 @@ int simpleMenu(string options[], int optionCount)
 {
 	for (size_t i = 0; i < optionCount; i++)
 	{
-		cout << i + 1 << ". " + options[i] << endl;
+		cout << i << ". " + options[i] << endl;
 	}
 	bool valid;
 	int output;
@@ -38,7 +38,7 @@ int simpleMenu(string options[], int optionCount)
 			valid = false;
 			continue;
 		}
-		if (output > optionCount ||output <= 0)
+		if (output > optionCount || output < 0)
 		{
 			cout << "Your input is not a valid option. Please try again\n";
 			valid = false;

@@ -73,6 +73,11 @@ void File::menu()
 	string options[] = { "Rename", "Delete" };
 	switch (simpleMenu(options, 2))
 	{
+	case 0:
+
+		break;
+	case 1:
+		break;
 	default:
 		break;
 	}

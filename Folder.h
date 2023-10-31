@@ -16,7 +16,9 @@ public:
 
 	int GetSize();
 	File GetLargest();
-	Folder* GoTo(int index);
+	Folder* GetFolder(int index);
+
+
 
 	void Add(File iFile);
 	void Add(Folder *iFolder);
@@ -31,7 +33,7 @@ private:
 
 Folder::Folder() : File()
 {
-	parent == nullptr;
+	parent = nullptr;
 	for (size_t i = 0; i < folderCap; i++)
 	{
 		folders[i] = nullptr;
@@ -114,14 +116,18 @@ File Folder::GetLargest()
 	}
 	return output;
 }
-
-Folder* Folder::GoTo(int index)
+/// <summary>
+/// 
+/// </summary>
+/// <param name="index"> 0 returns parent folder, 1-5 returns the corresponding Folder in this folder's array </param>
+/// <returns> A pointer to the Folder at the specified index if it exists </returns>
+Folder* Folder::GetFolder(int index)
 {
 	if (index == 0)
 	{
 		return parent;
 	}
-	if (1 <= index <= folderCap+1)
+	if (1 <= index && index <= folderCap+1)
 	{
 		return folders[index - 1];
 	}
