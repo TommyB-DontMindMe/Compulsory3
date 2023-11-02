@@ -13,7 +13,7 @@ void randSeed()
 /// Provides a simple menu based on a list of options.
 /// </summary>
 /// <param name="options"> A string array, each string will be an option on the menu </param>
-/// <param name="optionCount"> The number of  </param>
+/// <param name="optionCount"> The number of options provided </param>
 /// <returns></returns>
 int simpleMenu(string options[], int optionCount)
 {
@@ -28,6 +28,13 @@ int simpleMenu(string options[], int optionCount)
 		valid = true;
 		string input;
 		cin >> input;
+		for (size_t i = 0; i < optionCount; i++)
+		{
+			if (input == options[i])
+			{
+				return i;
+			}
+		}
 		try
 		{
 			output = stoi(input);

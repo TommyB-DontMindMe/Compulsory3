@@ -5,6 +5,7 @@ using namespace std;
 
 const int folderCap = 5;
 const int fileCap = 10;
+const int systemSize = 20;
 
 class Folder: public File
 {
@@ -21,15 +22,17 @@ public:
 
 
 	void Add(File iFile);
-	void Add(Folder *iFolder);
+	void Add(Folder iFolder);
 
 
 private:
 	Folder* parent;
 	Folder *folders[folderCap];
 	File files[fileCap];
+	static Folder systemSpace[systemSize];
 
 };
+
 
 Folder::Folder() : File()
 {
@@ -145,13 +148,23 @@ void Folder::Add(File iFile)
 		}
 	}
 }
-void Folder::Add(Folder *iFolder)
+void Folder::Add(Folder iFolder)
 {
+	int systemIndex;
+	for (size_t i = 0; i < systemSize; i++)
+	{
+		if (systemSpace[i].GetName() == "")
+		{
+			systemSpace[i] = iFolder;
+			systemIndex = i;
+			break;
+		}
+	}
 	for (size_t i = 0; i < folderCap; i++)
 	{
 		if (folders[i] == nullptr)
 		{
-			folders[i] = iFolder;
+			folders[i] = &systemSpace[systemIndex];
 			return;
 		}
 	}

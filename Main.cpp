@@ -4,63 +4,41 @@
 #include "Folder.h"
 using namespace std;
 
+Folder Folder::systemSpace[] = { Folder() };
 // Current folder List()
 // List options 
 // [Go to parent folder, Go to folder [n], Go to file [n]]
 //		File [Rename, Delete]
 //		Folder [Create Folder, Create File, Get Largest, ]
-const int systemSize = 20;
-Folder systemSpace[systemSize];
 
-void NewFolder(string iname, Folder *parent)
+Folder *MoveMenu(Folder *subject)
 {
-	for (size_t i = 0; i < systemSize; i++)
+	//option[0] = subject->GetFolder(0).GetName();
+	//option[1 ... 5] = subject->GetFolder(1 ... 5).GetName();
+	for (size_t i = 0; i < 1 + folderCap; i++)
 	{
-		if (systemSpace[i].GetName() == "")
+		if (subject->GetFolder(i) != nullptr)
 		{
-			systemSpace[i] = Folder(iname, parent);
-			parent->Add(&(systemSpace[i]));
-			return;
+			cout << i << ". " << subject->GetFolder(i)->GetName() << endl;
 		}
 	}
-}
-Folder* FolderSearch(string iName)
-{
-	for (size_t i = 0; i < systemSize; i++)
-	{
-		if (systemSpace[i].GetName() == iName);
-		{
-			return &systemSpace[i];
-		}
-	}
-	return nullptr;
-}
-Folder *FolderMoveMenu(Folder *subject)
-{
-	if (subject->GetFolder(0) != nullptr)
-	{
-		cout << "0. " + subject->GetFolder(0)->GetName() << " (Parent)" << endl;
-
-	}
-	int validAddress = 0;
-	for (size_t i = 0; i < folderCap; i++)
-	{
-		if (subject->GetFolder(i+1) != nullptr)
-		{
-			cout << i+1 << ". " + subject->GetFolder(i+1)->GetName() << endl;
-			validAddress++;
-		}
-	}
-	bool valid;
-	int oCase;
+	bool valid = true;
+	int option;
 	do
 	{
 		valid = true;
 		string input;
 		cin >> input;
+		for (size_t i = 0; i < 1 + folderCap; i++)
+		{
+			if (subject->GetFolder(i) != nullptr && input == subject->GetFolder(i)->GetName())
+			{
+				return subject->GetFolder(i);
+			}
+		}
 		try
 		{
-			oCase = stoi(input);
+			option = stoi(input);
 		}
 		catch (const std::exception&)
 		{
@@ -68,75 +46,92 @@ Folder *FolderMoveMenu(Folder *subject)
 			valid = false;
 			continue;
 		}
-		if (oCase > validAddress || oCase < 0)
+		if (option > 1 + folderCap || option < 0)
 		{
 			cout << "Your input is not a valid option. Please try again\n";
 			valid = false;
 			continue;
 		}
 	} while (!valid);
-	return subject->GetFolder(oCase);
+	return subject->GetFolder(option);
 }
-void RenameFolder(Folder *subject)
+void RenameMenu(File *subject)
 {
-	string input;
-	if (subject->GetFolder(0) == nullptr)
-	{
-		cout << "You cannot rename the root folder\n";
-		return;
-	}
-	cout << "Please provide a new name\n";
-	cin >> input;
-	subject->Rename(input);
+	cout << "Please enter a new name" << endl;
+	string newName;
+	cin >> newName;
+	subject->Rename(newName);
 }
-void FolderMenu(Folder* currentfolder)
+void AddFolderMenu(Folder *subject)
 {
-	cout << currentfolder->List() << endl;
-	string options[] = { "Move", "Rename", "Add Folder", "Add File" };
-	switch (simpleMenu(options, 4))
-	{
-	case 0:
-		FolderMoveMenu(currentfolder);
-		break;
-	case 1:
-		RenameFolder(currentfolder);
-		break;
-	case 2:
-		break;
-	case 3:
-		break;
-	default:
-		break;
-	}
+	cout << "Please enter a name for the new folder" << endl;
+	string newFolder;
+	cin >> newFolder;
+	subject->Add(Folder(newFolder, subject));
 }
-
+void AddFileMenu(Folder* subject)
+{
+	cout << "Please enter a name for the new file" << endl;
+	string newFile;
+	cin >> newFile;
+	subject->Add(File(newFile));
+}
+void FindLargestMenu(Folder *subject)
+{
+	subject->GetLargest();
+}
 
 int main()
 {
 	randSeed();
 
-	systemSpace[0] = Folder("root", nullptr);
-	Folder* currentFolder = &systemSpace[0];
+	Folder root = Folder("root", nullptr);
+	Folder* currentFolder = &root;
+
+	currentFolder->Add(Folder("stuff", currentFolder));
+	currentFolder->Add(File("meow"));
+	(root.GetFolder(1))->Add(File("moo"));
+
+	int menuSelector = 0;
+	currentFolder = currentFolder->GetFolder(1);
+	do
+	{
+		cout << "Current Folder is:\n";
+		cout << currentFolder->List() << endl;
+		string mOptions[] = {"Move", "Rename", "Add Folder", "Add File", "Find Largest File", "Exit"};
+		switch (simpleMenu(mOptions, 6))
+		{
+		case 0:
+			currentFolder = MoveMenu(currentFolder);
+			break;
+		case 1:
+			RenameMenu(currentFolder);
+			break;
+		case 2:
+			AddFolderMenu(currentFolder);
+			break;
+		case 3:
+			AddFileMenu(currentFolder);
+			break;
+		case 4:
+
+			break;
+		default:
+			menuSelector = -1;
+			break;
+		}
 
 
+	} while (menuSelector != -1);
+	// do {List options; take input; Run corresponding function}
+	// options [Move/select file, Rename, Add Folder, Add File]
+	// Move[parent = 0, Folder = 1-5, Files = 6-15]
+	// Rename {cin >> string input; currentFolder->Rename(input);}
+	// Add Folder {cin input; currentFolder->Add(Folder("input", currentFolder);}
+	// Add File {cin input; currentFolder->Add(File("input");}
 
 
-	File *stuff = &systemSpace[0];
-	systemSpace[1] = Folder("Folder1", currentFolder);
-	systemSpace[1].Add(File("AlsoAFile"));
-	File file1 = File("File1");
-	File file2 = File("File2");
-	systemSpace[0].Add(&systemSpace[1]);
-	systemSpace[0].Add(file1);
-	systemSpace[0].Add(file2);
-
-	NewFolder("Folder3", currentFolder);
-	FolderMenu(currentFolder);
-
-	cout << (*stuff).List() << endl;
-	cout << systemSpace[0].GetLargest().List();
-	(systemSpace[0].GetFolder(1))->Add(File("File3"));
-	//string moo[] = {"hi", "stuffs", "poyo", "cow", "bleh"};
-	//cout << to_string(simpleMenu(moo, sizeof(moo)/sizeof(moo[0])));
+	cout << (*currentFolder).List() << endl;
+	// cout << currentFolder->GetLargest().List();
 	return 0;
 }
