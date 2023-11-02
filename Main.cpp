@@ -123,15 +123,5 @@ int main()
 
 
 	} while (menuSelector != -1);
-	// do {List options; take input; Run corresponding function}
-	// options [Move/select file, Rename, Add Folder, Add File]
-	// Move[parent = 0, Folder = 1-5, Files = 6-15]
-	// Rename {cin >> string input; currentFolder->Rename(input);}
-	// Add Folder {cin input; currentFolder->Add(Folder("input", currentFolder);}
-	// Add File {cin input; currentFolder->Add(File("input");}
-
-
-	cout << (*currentFolder).List() << endl;
-	// cout << currentFolder->GetLargest().List();
 	return 0;
 }
