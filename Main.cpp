@@ -13,8 +13,7 @@ Folder Folder::systemSpace[] = { Folder() };
 
 Folder *MoveMenu(Folder *subject)
 {
-	//option[0] = subject->GetFolder(0).GetName();
-	//option[1 ... 5] = subject->GetFolder(1 ... 5).GetName();
+	cout << "Please select a folder to move to" << endl;
 	for (size_t i = 0; i < 1 + folderCap; i++)
 	{
 		if (subject->GetFolder(i) != nullptr)
@@ -78,7 +77,7 @@ void AddFileMenu(Folder* subject)
 }
 void FindLargestMenu(Folder *subject)
 {
-	subject->GetLargest();
+	cout << "The largest file in this folder is: " << subject->GetLargest().GetName() << endl;
 }
 
 int main()
@@ -88,15 +87,16 @@ int main()
 	Folder root = Folder("root", nullptr);
 	Folder* currentFolder = &root;
 
-	currentFolder->Add(Folder("stuff", currentFolder));
+	currentFolder->Add(Folder("cluck", currentFolder));
 	currentFolder->Add(File("meow"));
-	(root.GetFolder(1))->Add(File("moo"));
+	currentFolder->GetFolder(1)->Add(File("chicken"));
+	currentFolder->GetFolder(1)->Add(File("hen"));
+	currentFolder->GetFolder(1)->Add(File("rooster"));
 
-	int menuSelector = 0;
-	currentFolder = currentFolder->GetFolder(1);
+	bool run = true;
 	do
 	{
-		cout << "Current Folder is:\n";
+		cout << "Current Folder is: " << currentFolder->GetName() << endl;
 		cout << currentFolder->List() << endl;
 		string mOptions[] = {"Move", "Rename", "Add Folder", "Add File", "Find Largest File", "Exit"};
 		switch (simpleMenu(mOptions, 6))
@@ -114,14 +114,14 @@ int main()
 			AddFileMenu(currentFolder);
 			break;
 		case 4:
-
+			FindLargestMenu(currentFolder);
 			break;
 		default:
-			menuSelector = -1;
+			run =  false;
 			break;
 		}
 
 
-	} while (menuSelector != -1);
+	} while (run);
 	return 0;
 }

@@ -16,7 +16,6 @@ public:
 	void Rename(string iName);
 	virtual int GetSize();
 	string GetName();
-	virtual void menu();
 
 protected:
 	string name;
@@ -66,20 +65,5 @@ int File::GetSize()
 string File::GetName()
 {
 	return name;
-}
-
-void File::menu()
-{
-	string options[] = { "Rename", "Delete" };
-	switch (simpleMenu(options, 2))
-	{
-	case 0:
-
-		break;
-	case 1:
-		break;
-	default:
-		break;
-	}
 }
 
